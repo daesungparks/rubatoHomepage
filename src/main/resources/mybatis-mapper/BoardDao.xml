@@ -12,9 +12,44 @@
 
 	<select id="fblistDao" resultType="com.ds.rubato.dto.FBoardDto">
 		SELECT t1.fbnum , t1.fbid , t1.fbtitle , t1.fbcontent,t1.fbdate,t1.fbhit,t1.fbreplycount,t2.mname
-    FROM rubato_freeboard T1,rubato_member T2
-    WHERE t1.fbid = t2.mid
-    ORDER BY t1.fbnum DESC
+	    FROM rubato_freeboard T1,rubato_member T2
+	    WHERE t1.fbid = t2.mid
+	    ORDER BY t1.fbnum DESC
 	</select>
+
+	<select id="fbviewDao" resultType="com.ds.rubato.dto.FBoardDto">
+		SELECT t1.fbnum , t1.fbid , t1.fbtitle , t1.fbcontent, t1.fbdate, t1.fbhit, t1.fbreplycount, t2.mname
+	    FROM rubato_freeboard T1,rubato_member T2
+	    WHERE t1.fbid = t2.mid AND t1.fbnum = #{param1}	    
+	</select>
+	
+	<update id="fbhitDao">
+		UPDATE rubato_freeboard SET fbhit=fbhit+1 WHERE fbnum=#{param1} 
+	</update>
+   <select id="fbTitleSearchlist" resultType="com.ds.rubato.dto.FBoardDto">
+      SELECT t1.fbnum, t1.fbid, t1.fbtitle, t1.fbcontent, t1.fbdate, t1.fbhit, t1.fbreplycount, t2.mname
+       FROM rubato_freeboard T1, rubato_member T2
+       WHERE t1.fbid = t2.mid and fbtitle like '%' || #{param1} || '%'
+       order by t1.fbnum desc 
+   </select>
+   
+   <select id="fbContentSearchlist" resultType="com.ds.rubato.dto.FBoardDto">
+      SELECT t1.fbnum, t1.fbid, t1.fbtitle, t1.fbcontent, t1.fbdate, t1.fbhit, t1.fbreplycount, t2.mname
+       FROM rubato_freeboard T1, rubato_member T2
+       WHERE t1.fbid = t2.mid and fbcontent like '%' || #{param1} || '%'
+       order by t1.fbnum desc 
+   </select>
+   
+   <select id="fbNameSearchlist" resultType="com.ds.rubato.dto.FBoardDto">
+      SELECT t1.fbnum, t1.fbid, t1.fbtitle, t1.fbcontent, t1.fbdate, t1.fbhit, t1.fbreplycount, t2.mname
+       FROM rubato_freeboard T1, rubato_member T2
+       WHERE t1.fbid = t2.mid and t2.mname like '%' || #{param1} || '%'
+       order by t1.fbnum desc 
+   </select>
+   
+   <insert id="fbfileInsertDao">
+   		INSERT INTO rubato_uploadfile (filenum,boardnum,filename,fileurl,orifilename,fileextension) 
+   		VALUES(rubatofile_seq.nextval,#{param1},#{param2},#{param3},#{param4},#{param5})
+   </insert>
 
 </mapper>
