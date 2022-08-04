@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head> 
@@ -124,42 +126,31 @@
         <th>일시</th>
         <th>조회수</th>
       </tr>
+		<c:forEach items="${fblist}" var="fbdto">
       <tr>
-        <td class="col1">1</td>
+        <td class="col1">${fbdto.fbnum}</td>
         <td class="col2">
-          <a href="board_view">까스통님의 선물인 보드카가 정말 독하네요!!!</a>
+          <a href="board_view">${fbdto.fbtitle}</a>
         </td>
-        <td class="col3">루바토</td>
-        <td class="col4">2017-09-20</td>
-        <td class="col5">15</td>
-      </tr>
-      <tr>
-        <td class="col1">2</td>
-        <td class="col2">
-          <a href="board_view">까스통님의 선물인 보드카가 정말 독하네요!!!</a>
-        </td>
-        <td class="col3">루바토</td>
-        <td class="col4">2017-09-20</td>
-        <td class="col5">15</td>
-      </tr>	
-      <tr>
-        <td class="col1">3</td>
-        <td class="col2">
-          <a href="board_view">까스통님의 선물인 보드카가 정말 독하네요!!!</a>
-        </td>
-        <td class="col3">루바토</td>
-        <td class="col4">2017-09-20</td>
-        <td class="col5">15</td>
-      </tr>
+        <td class="col3">${fbdto.mname}</td>
+        <td class="col4">${fbdto.fbdate}</td>
+        <td class="col5">${fbdto.fbhit}</td>
+
+     	 </tr>
+		</c:forEach>
     </table>
-    <div id="buttons">
+	<div id="buttons">
+
+		<!--
       <div class="col1">◀ 이전 1 다음 ▶</div>
+		-->
+
       <div class="col2">
         <img src="${pageContext.request.contextPath}/resources/img/list.png"> 
         <a href="board_write"><img src="${pageContext.request.contextPath}/resources/img/write.png"></a>
       </div>
     </div>
- 
+ 		
   </section> <!-- section main -->
   <div class="clear"></div>
 
