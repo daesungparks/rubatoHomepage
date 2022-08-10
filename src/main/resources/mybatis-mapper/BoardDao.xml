@@ -47,9 +47,28 @@
        order by t1.fbnum desc 
    </select>
    
+   <delete id="fbdeleteDao">
+   		DELETE FROM rubato_freeboard WHERE fbnum=#{param1}
+   </delete>
+   <!-- 첨부파일 SQL -->
    <insert id="fbfileInsertDao">
    		INSERT INTO rubato_uploadfile (filenum,boardnum,filename,fileurl,orifilename,fileextension) 
    		VALUES(rubatofile_seq.nextval,#{param1},#{param2},#{param3},#{param4},#{param5})
    </insert>
 
+	<select id="fbGetfileinfoDao"  resultType="com.ds.rubato.dto.FileDto">
+		SELECT * FROM rubato_uploadfile WHERE boardnum=#{param1}
+	</select>
+	
+	<!-- 댓글 SQL -->
+	<insert id="rbwriteDao">
+		INSERT INTO rubato_replyboard(rbnum,boardnum,rbid,rbcontent) VALUES (rubatorb_seq.nextval, #{param1},#{param2},#{param3})
+	</insert>
+	
+	<select id="rblistDao" resultType="com.ds.rubato.dto.ReplyDto">
+		SELECT * FROM rubato_replyboard WHERE boardnum = #{param1} ORDER BY rbnum ASC
+	</select>
+	
+	
+	
 </mapper>

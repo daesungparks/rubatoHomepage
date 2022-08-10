@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head> 
@@ -108,15 +109,68 @@
     <span id="info">글쓴이 : ${fbView.mname } | 조회수 ${fbView.fbhit } | 게시일 : ${fbView.fbdate }</span>
   </div>	
   <p id="view_content">
-    ${fbView.fbcontent }s
-  </p>		
+    ${fbView.fbcontent }
+  </p>	
+  <br>	
+  <c:if test="${fileDto.fileextension == 'jpg' or fileDto.fileextension == 'png' or fileDto.fileextension == 'gif' or fileDto.fileextension == 'bmp'}">
+  	<p id="image_view">
+  		<img src="${pageContext.request.contextPath }/resources/uploadfiles/${fileDto.filename}">
+  	</p>
+  
+  </c:if>
+  
+  <hr>
+  <br>
+  <p id="file_info">
+  	
+  	<a href="${pageContext.request.contextPath }/resources/uploadfiles/${fileDto.filename}" style="text-decoration:none">
+  	<span class="file_info">※ 첨부파일 : ${fileDto.fileurl}</span></a>
+  </p>
+  <br>
+  <!-- 해당 글의 댓글 리스트 출력 -->
+  <table border="1" cellpading="0" cellspacing="0" width="750">
+  	<c:forEach items="${rblist }" var="rbdto">
+  		<tr>
+  			<td>
+  				댓글쓴이 : ${rbdto.rbid }
+  			</td>
+  		</tr>
+  		<tr>
+  			<td>
+  				${rbdto.rbcontent }
+  			</td>
+  		</tr>
+  		<tr>
+  			<td>
+  				댓글 게시일: ${rbdto.rbdate}
+  			</td>
+  		</tr>
+  	</c:forEach>
+  </table>
+  
+  
   <div id="comment_box">
+  <form action="replyOk">
+  <input type="hidden" name="boardnum" value="${fbView.fbnum }">
     <img id="title_comment" src="${pageContext.request.contextPath }/resources/img/title_comment.gif">
-    <textarea></textarea>
-    <img id="ok_ripple" src="${pageContext.request.contextPath }/resources/img/ok_ripple.gif">
+    <textarea name ="rbcontent"></textarea>
+    <input type="image" id="ok_ripple" src="${pageContext.request.contextPath }/resources/img/ok_ripple.gif">
+ 	</form>
   </div>
   <div id="buttons">
-    <a href="#"><img src="${pageContext.request.contextPath }/resources/img/delete.png"></a>		
+    <%
+		String sid = (String) session.getAttribute("sessionId");
+    	if(sid == null) {
+    		sid = "GUEST";
+    	}
+		String qid = request.getAttribute("boardId").toString();
+								
+		if((sid != null) && (sid.equals(qid)) || (sid.equals("admin"))){
+	%>  
+ 	   <a href="fbdelete?fbnum=${fbView.fbnum }"><img src="${pageContext.request.contextPath }/resources/img/delete.png"></a>		
+   	<%
+		}
+   	%>
     <a href="board_list"><img src="${pageContext.request.contextPath }/resources/img/list.png"></a>
     <a href="board_write"><img src="${pageContext.request.contextPath }/resources/img/write.png"></a>			
   </div>

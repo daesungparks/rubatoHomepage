@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ds.rubato.dao.BoardDao;
 import com.ds.rubato.dao.MemberDao;
 import com.ds.rubato.dto.FBoardDto;
+import com.ds.rubato.dto.FileDto;
 
 @Controller
 public class HomeController {
@@ -73,14 +74,19 @@ public class HomeController {
 	public String board_view(HttpServletRequest request, Model model) {
 		
 		String fbnum = request.getParameter("fbnum");
+		int fbnumint = Integer.parseInt(fbnum);
 		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
 		
 		boardDao.fbhitDao(fbnum);//조회수 증가 함수 호출
 		
 		FBoardDto fboardDto = boardDao.fbviewDao(fbnum);
+		FileDto fileDto = boardDao.fbGetfileinfoDao(fbnum);
 		
 		model.addAttribute("fbView", fboardDto);
+		model.addAttribute("fileDto",fileDto);
+		model.addAttribute("rblist", boardDao.rblistDao(fbnumint));//댓글리스트 가져와서 반환하기
+		model.addAttribute("boardId",fboardDto.getFbid()); //게시판 아이디 불러오기
 		
 		return "board_view";
 	}
@@ -202,6 +208,46 @@ public class HomeController {
 			boardDao.fbfileInsertDao(boardnum, filename, orifilename, fileurl, fileextension);
 		}
 	
+		
+		return "redirect:board_list";
+	}
+	@RequestMapping(value="/replyOk")
+	public String replyOk(HttpServletRequest request , Model model) {
+		
+		String boardnum = request.getParameter("boardnum");//덧글이 달릴 원 게시글의 고유번호
+		String rbcontent = request.getParameter("rbcontent");//덧글의 내용
+		int fbnum = Integer.parseInt(boardnum);
+		
+		HttpSession session = request.getSession();
+		String sessionId = (String) session.getAttribute("sessionId");
+		String rbid = null;
+		
+		if(sessionId == null) {
+			rbid = "GUEST";
+		}else {
+			rbid = sessionId;
+		}
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		
+		boardDao.rbwriteDao(fbnum, rbid, rbcontent);
+		
+		model.addAttribute("fbView",boardDao.fbviewDao(boardnum));
+		model.addAttribute("rblist",boardDao.rblistDao(fbnum));
+		model.addAttribute("boardId",boardDao.fbviewDao(boardnum).getFbid());
+		
+		
+		return "board_view";
+	}
+	
+	@RequestMapping(value="/fbdelete")
+	public String fbdelete(HttpServletRequest request) {
+		
+		String fbnum = request.getParameter("fbnum");
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		
+		boardDao.fbdeleteDao(fbnum);
 		
 		return "redirect:board_list";
 	}
